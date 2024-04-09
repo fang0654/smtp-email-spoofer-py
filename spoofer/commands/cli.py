@@ -7,13 +7,13 @@ def run(args):
     appdescription.print_description()
 
     # Connect to SMTP over TLS
-    connection = SMTPConnection(args.host, str(args.port))
+    connection = SMTPConnection(args.host, str(args.port), args.noauth)
 
     # Attempt login
     if not args.noauth:
         success = connection.login(args.username, args.password)
         if success:
-            logger.success('Authentication successful')
+            logger.success("Authentication successful")
         else:
             exit(1)
 
@@ -26,13 +26,8 @@ def run(args):
 
     # Compose MIME message
     message = connection.compose_message(
-        args.sender,
-        args.name,
-        args.recipients,
-        args.subject,
-        message_body
+        args.sender, args.name, args.recipients, args.subject, message_body
     )
 
-    if get_yes_no('Send message (Y/N)?: ', None):
+    if get_yes_no("Send message (Y/N)?: ", None):
         connection.send_mail(message)
-
